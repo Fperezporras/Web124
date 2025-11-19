@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Proyecto HIBA+ | [Nombre del Grupo]</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/geotiff/dist/geotiff.js"></script>
+    <script src="https://unpkg.com/leaflet-geotiff/leaflet-geotiff.js"></script>
+    <script src="https://unpkg.com/leaflet-geotiff/leaflet-geotiff-plotty.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        /* ESTILOS INSTITUCIONALES MEJORADOS */
+        body { 
+            font-family: 'Lato', 'Helvetica Neue', Arial, sans-serif; 
+            margin: 0; 
+            padding: 0; 
+            line-height: 1.6;
+            background-color: #f4f7f9; 
+            color: #333;
+        }
+        header, section, footer { 
+            padding: 20px; 
+            max-width: 1000px; 
+            margin: 20px auto;
+            background-color: white;
+            border-radius: 8px; 
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05); 
+        }
+        /* ESTILO DEL HEADER Y LOGO */
+        header {
+            background-color: #1E428C; /* Azul Institucional Oscuro */
+            color: white;
+            display: flex; /* Alineación horizontal */
+            align-items: center; /* Centrado vertical */
+            padding: 20px;
+        }
+        header img {
+            height: 60px; /* Tamaño del logo */
+            margin-right: 20px;
+            background-color: white; /* Fondo blanco para el logo */
+            padding: 5px;
+            border-radius: 4px;
+        }
+        header .header-content {
+            text-align: left;
+        }
+        h1 { margin: 0; }
+        /* FIN ESTILO HEADER */
+        
+        h2 { color: #1E428C; border-bottom: 2px solid #F0B400; padding-bottom: 5px; }
+        h3 { color: #1E428C; }
+
+        /* Estilo de Navegación */
+        nav { 
+            background-color: #1E428C; 
+            color: white; 
+            padding: 10px 0; 
+            text-align: center;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            border-radius: 0;
+        }
+        nav a { 
+            color: #F0B400; /* Dorado para enlaces */
+            margin: 0 15px; 
+            text-decoration: none; 
+            font-weight: 700;
+            padding: 5px 10px;
+            transition: background-color 0.3s;
+        }
+        nav a:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+        }
+        /* Enlaces generales */
+        a { color: #1E428C; text-decoration: none; font-weight: 700; }
+        a:hover { text-decoration: underline; }
+
+        /* Estilos de Contenido Específicos del Mapa */
+        #map { height: 500px; width: 100%; margin-top: 20px; border: 1px solid #ccc; border-radius: 4px; }
+        .grid-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; }
+        
+    </style>
+</head>
+<body>
+
+    <header>
+        <img src="assets/images/etsiam_logo.png" alt="Logo de la ETSIAM">
+        <div class="header-content">
+            <h1>HIBA+ (Hub Iberia Agrotech Plus)</h1>
+            <p>Proyecto de digitalización y sostenibilidad agroalimentaria España-Portugal.</p>
+        </div>
+    </header>
+    
+    <nav>
+        <a href="index.html">Inicio del Grupo</a>
+        <a href="#info">Información del Proyecto</a>
+        <a href="#resultados">Resultados (Mapa)</a>
+        <a href="mailto:tunombre@dominio.com">Contacto</a>
+    </nav>
+
+    <section id="info">
+        <h2>ℹ️ Información del Proyecto</h2>
+        <p><strong>Financiación:</strong> Iniciativa de cooperación transfronteriza Interreg España-Portugal (Poctep) con una inversión pública cercana a los tres millones de euros.</p>
+        <p><strong>Ejes Tecnológicos:</strong> El proyecto se apoya en servicios de testeo y experimentación en observación de la tierra, **robótica**, IoT (Internet of Things) e Inteligencia Artificial (IA).</p>
+        <p><strong>Foco de la UCO:</strong> Nuestro grupo (ARG-124) contribuye con la innovación en **agricultura de precisión**. Estamos realizando pruebas con la plataforma robótica terrestre **Spot** de Boston Dynamics para la captura de datos LiDAR, que se combinan con imágenes satelitales y drones para informar las decisiones de manejo de cultivos.</p>
+    </section>
+    <hr>
+
+    <section id="resultados">
+        <h2>🗺️ Resultados Geoespaciales del Proyecto HIBA+</h2>
+        <p>Visualización de la capa de resultados para el periodo 2025-10-12 a 2025-11-08.</p>
+        <div id="map"></div>
+    </section>
+    <hr>
+    
+    <footer>
+        <p>&copy; 2025 Grupo de Investigación. Parte de los resultados del Proyecto HIBA+.</p>
+    </footer>
+
+    <script>
+    // 1. Inicialización del Mapa
+    var map = L.map('map').setView([40.0, -4.0], 6); // Coordenadas y zoom inicial
+
+    // Capa base de OpenStreetMap
+    var osm = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '© OpenStreetMap contributors'
+    }).addTo(map);
+
+    // 2. Definición de Capas GeoJSON
+    // Ruta relativa que funciona en GitHub Pages
+    var geojsonUrl = 'assets/geotiffs/ES.61.13.46.5.11_grid20_2025-10-12_2025-11-08.geojson';
+    var geoJsonLayer;
+
+    // Estilo que tendrán las entidades GeoJSON
+    function style(feature) {
+        return {
+            fillColor: '#007FFF', // Azul de proyecto HIBA+
+            weight: 2,
+            opacity: 1,
+            color: '#111',
+            fillOpacity: 0.7
+        };
+    }
+
+    // Función para manejar la carga del GeoJSON
+    fetch(geojsonUrl)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Error de carga. Verifica que el archivo esté en: assets/geotiffs/' + response.statusText);
+            }
+            return response.json();
+        })
+        .then(data => {
+            geoJsonLayer = L.geoJSON(data, {
+                style: style,
+                // Añadir popup con propiedades
+                onEachFeature: function (feature, layer) {
+                    if (feature.properties) {
+                        layer.bindPopup(Object.keys(feature.properties).map(key => 
+                            `<strong>${key}:</strong> ${feature.properties[key]}`
+                        ).join('<br>'));
+                    }
+                }
+            }).addTo(map);
+
+            // Centrar el mapa en la extensión del GeoJSON cargado
+            map.fitBounds(geoJsonLayer.getBounds());
+            
+            // 3. Control de Capas para activar/desactivar
+            var baseLayers = { "OpenStreetMap": osm };
+            var overlayLayers = {
+                "Resultados HIBA+": geoJsonLayer
+            };
+            L.control.layers(baseLayers, overlayLayers).addTo(map);
+
+        })
+        .catch(error => {
+            console.error("Error al cargar el GeoJSON:", error);
+            L.control.layers({ "OpenStreetMap": osm }, {}).addTo(map);
+        });
+        
+    </script>
+</body>
+</html>
