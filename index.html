@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Grupo de Investigación: [Nombre]</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/geotiff/dist/geotiff.js"></script>
+    <script src="https://unpkg.com/leaflet-geotiff/leaflet-geotiff.js"></script>
+    <script src="https://unpkg.com/leaflet-geotiff/leaflet-geotiff-plotty.js"></script>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 0; padding: 0; }
+        header, section, footer { padding: 20px; max-width: 1000px; margin: 0 auto; }
+        nav { background-color: #333; color: white; padding: 10px; }
+        nav a { color: white; margin-right: 15px; text-decoration: none; }
+        #map { height: 500px; width: 100%; margin-top: 20px; border: 1px solid #ccc; }
+        .grid-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>[Nombre de tu Grupo de Investigación]</h1>
+        <p>Línea de investigación principal...</p>
+    </header>
+    
+    <nav>
+        <a href="#investigadores">Investigadores</a>
+        <a href="#proyectos">Proyectos</a>
+        <a href="#papers">Papers</a>
+        <a href="#resultados">Resultados (Mapa)</a>
+        <a href="#contacto">Contacto</a>
+    </nav>
+
+    <section id="investigadores">
+        <h2>🧑‍🔬 Investigadores</h2>
+        <div class="grid-container">
+            <div>
+                <h3>Dr. [Nombre]</h3>
+                <p>Especialidad: [Especialidad]</p>
+            </div>
+            </div>
+    </section>
+    <hr>
+    
+    <section id="proyectos">
+        <h2>📂 Proyectos</h2>
+        <h3>[Título del Proyecto 1]</h3>
+        <p>Descripción breve del proyecto y sus objetivos.</p>
+        </section>
+    <hr>
+
+    <section id="papers">
+        <h2>📄 Publicaciones (Papers)</h2>
+        <ul>
+            <li>[Año]. Autor(es). "Título del Artículo". *Revista/Conferencia*. [Enlace]</li>
+            </ul>
+    </section>
+    <hr>
+
+    <section id="resultados">
+        <h2>🗺️ Resultados y Datos Geoespaciales</h2>
+        <p>Explora los resultados de nuestros modelos y análisis ráster directamente en el mapa interactivo. Utiliza el control de capas (superior derecho) para alternar entre las diferentes capas de datos.</p>
+        <div id="map"></div>
+    </section>
+    <hr>
+
+    <section id="contacto">
+        <h2>📧 Contacto</h2>
+        <p>Para contactar con nuestro grupo de investigación, por favor, envíe un correo electrónico al director:</p>
+        <p><strong>Email:</strong> <a href="mailto:fjmesas@uco.es">tunombre@dominio.com</a></p>
+        <p>Responderemos a su consulta lo antes posible.</p>
+    </section>
+    <hr>
+
+    <footer>
+        <p>&copy; 2025 Grupo de Investigación. Todos los derechos reservados.</p>
+    </footer>
+
+    <script>
+    // 1. Inicialización del Mapa
+    var map = L.map('map').setView([40.0, -4.0], 6); // Coordenadas y zoom inicial
+
+    // Capa base de OpenStreetMap
+    var osm = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '© OpenStreetMap contributors'
+    }).addTo(map);
+
+    // 2. Definición de Capas GeoJSON
+    
+    // **¡IMPORTANTE!** Reemplaza esta URL con el enlace RAW de tu GeoJSON
+    var geojsonUrl = 'https://github.com/Fperezporras/Web124/blob/f0d4095593cab8de9b34b793b24cffd52cd00607/assets/geotiffs/ES.61.13.46.5.11_grid20_2025-10-12_2025-11-08.geojson';
+    
+    var geoJsonLayer;
+
+    // Estilo que tendrán las entidades GeoJSON (ejemplo para polígonos/líneas)
+    function style(feature) {
+        return {
+            fillColor: '#ff7800', // Color de relleno (si es polígono)
+            weight: 2,             // Grosor de la línea
+            opacity: 1,            // Opacidad de la línea
+            color: 'white',        // Color de la línea
+            dashArray: '3',        // Estilo de línea (punteada)
+            fillOpacity: 0.7       // Opacidad del relleno
+        };
+    }
+
+    // Función para manejar la carga del GeoJSON
+    fetch(geojsonUrl)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('No se pudo cargar el GeoJSON: ' + response.statusText);
+            }
+            return response.json();
+        })
+        .then(data => {
+            // Crea la capa GeoJSON de Leaflet con los datos y el estilo
+            geoJsonLayer = L.geoJSON(data, {
+                style: style, // Aplica el estilo definido arriba
+                // Opcional: Añadir un popup al hacer clic
+                onEachFeature: function (feature, layer) {
+                    if (feature.properties) {
+                        layer.bindPopup(Object.keys(feature.properties).map(key => 
+                            `<strong>${key}:</strong> ${feature.properties[key]}`
+                        ).join('<br>'));
+                    }
+                }
+            }).addTo(map); // Añade la capa al mapa
+
+            // Centrar el mapa en la extensión del GeoJSON cargado
+            map.fitBounds(geoJsonLayer.getBounds());
+            
+            // 3. Control de Capas para activar/desactivar
+            var baseLayers = { "OpenStreetMap": osm };
+            var overlayLayers = {
+                "Capa Vectorial (GeoJSON)": geoJsonLayer
+            };
+            L.control.layers(baseLayers, overlayLayers).addTo(map);
+
+        })
+        .catch(error => {
+            console.error("Error al cargar el GeoJSON:", error);
+            // Si el GeoJSON no carga, al menos inicializa el control de capas con solo la base
+            L.control.layers({ "OpenStreetMap": osm }, {}).addTo(map);
+        });
+        
+
+</script>
+</body>
+</html>
