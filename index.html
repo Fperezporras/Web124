@@ -3,74 +3,164 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Grupo de Investigación: [Nombre]</title>
-    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
-    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-    <script src="https://unpkg.com/geotiff/dist/geotiff.js"></script>
-    <script src="https://unpkg.com/leaflet-geotiff/leaflet-geotiff.js"></script>
-    <script src="https://unpkg.com/leaflet-geotiff/leaflet-geotiff-plotty.js"></script>
+    <title>Grupo de Investigación: AGR-124</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" /> 
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        body { font-family: Arial, sans-serif; margin: 0; padding: 0; }
-        header, section, footer { padding: 20px; max-width: 1000px; margin: 0 auto; }
-        nav { background-color: #333; color: white; padding: 10px; }
-        nav a { color: white; margin-right: 15px; text-decoration: none; }
-        #map { height: 500px; width: 100%; margin-top: 20px; border: 1px solid #ccc; }
-        .grid-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; }
+        /* ESTILOS INSTITUCIONALES MEJORADOS */
+        body { 
+            font-family: 'Lato', 'Helvetica Neue', Arial, sans-serif; 
+            margin: 0; 
+            padding: 0; 
+            line-height: 1.6;
+            background-color: #f4f7f9;
+            color: #333;
+        }
+        header, section, footer { 
+            padding: 20px; 
+            max-width: 1000px; 
+            margin: 20px auto;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+        }
+        /* ESTILO DEL HEADER Y LOGO */
+        header {
+            background-color: #1E428C; /* Azul Institucional Oscuro */
+            color: white;
+            display: flex; /* Alineación horizontal */
+            align-items: center; /* Centrado vertical */
+            padding: 20px;
+        }
+        header img {
+            height: 60px; /* Tamaño del logo */
+            margin-right: 20px;
+            background-color: white; /* Fondo blanco para el logo */
+            padding: 5px;
+            border-radius: 4px;
+        }
+        header .header-content {
+            text-align: left;
+        }
+        h1 { margin: 0; }
+        /* FIN ESTILO HEADER */
+        
+        h2 { color: #1E428C; border-bottom: 2px solid #F0B400; padding-bottom: 5px; }
+        h3 { color: #1E428C; }
+
+        /* Estilo de Navegación */
+        nav { 
+            background-color: #1E428C; 
+            color: white; 
+            padding: 10px 0; 
+            text-align: center;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            border-radius: 0;
+        }
+        nav a { 
+            color: #F0B400; /* Dorado para enlaces */
+            margin: 0 15px; 
+            text-decoration: none; 
+            font-weight: 700;
+            padding: 5px 10px;
+            transition: background-color 0.3s;
+        }
+        nav a:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+        }
+        /* Enlaces generales */
+        a { color: #1E428C; text-decoration: none; font-weight: 700; }
+        a:hover { text-decoration: underline; }
+
+        /* Estilos de Contenido */
+        hr { border-top: 1px solid #ddd; margin: 20px auto; max-width: 90%; }
+        .grid-container { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); 
+            gap: 20px; 
+        }
+        .grid-container > div {
+            border: 1px solid #eee;
+            padding: 15px;
+            border-radius: 6px;
+        }
+        
     </style>
 </head>
 <body>
 
     <header>
-        <h1>[Nombre de tu Grupo de Investigación]</h1>
-        <p>Línea de investigación principal...</p>
+        <img src="assets/images/etsiam_logo.png" alt="Logo de la ETSIAM"> 
+        <div class="header-content">
+            <h1>[Nombre de tu Grupo de Investigación] (AGR-124)</h1>
+            <p>Investigación en Teledetección, Robótica y Agricultura de Precisión.</p>
+        </div>
     </header>
     
     <nav>
         <a href="#investigadores">Investigadores</a>
         <a href="#proyectos">Proyectos</a>
         <a href="#papers">Papers</a>
-        <a href="#resultados">Resultados (Mapa)</a>
+        <a href="proyecto_hiba.html">Resultados (HIBA+)</a>
         <a href="#contacto">Contacto</a>
     </nav>
 
     <section id="investigadores">
-        <h2>🧑‍🔬 Investigadores</h2>
+        <h2>🧑‍🔬 Investigadores Principales</h2>
         <div class="grid-container">
             <div>
-                <h3>Dr. [Nombre]</h3>
-                <p>Especialidad: [Especialidad]</p>
+                <h3>Francisco Javier Mesas Carrascosa</h3>
+                <p><strong>Rol:</strong> Catedrático y Director de Grupo.</p>
+                <p><strong>Especialidad:</strong> SIG, Teledetección y Modelos Digitales del Terreno (MDT). Experto en la aplicación de tecnologías geoespaciales avanzadas al sector agrícola y ambiental.</p>
             </div>
+            <div>
+                <h3>Fernando Pérez Porras</h3>
+                <p><strong>Rol:</strong> Profesor e Investigador.</p>
+                <p><strong>Especialidad:</strong> Desarrollo de soluciones de Agricultura 4.0. Se centra en el procesamiento de imágenes de drones y satélites, Big Data y el desarrollo de plataformas GIS para la gestión eficiente de recursos hídricos y cultivos.</p>
             </div>
+            <div>
+                <h3>Jorge Torres Sánchez</h3>
+                <p><strong>Rol:</strong> Investigador Postdoctoral / Profesor.</p>
+                <p><strong>Especialidad:</strong> Robótica y Sensores 3D. Especialista en la integración de plataformas robóticas terrestres (incluyendo LiDAR) con datos aéreos y satelitales para la monitorización de fenotipos y biomasa en cultivos intensivos.</p>
+            </div>
+        </div>
     </section>
     <hr>
     
     <section id="proyectos">
-        <h2>📂 Proyectos</h2>
-        <h3>[Título del Proyecto 1]</h3>
-        <p>Descripción breve del proyecto y sus objetivos.</p>
-        </section>
+        <h2>📂 Proyectos Destacados</h2>
+        
+        <div>
+            <h3><a href="proyecto_hiba.html">HIBA+ (Hub Iberia Agrotech Plus)</a></h3>
+            <p>Consolidación de la digitalización agroalimentaria hispano-lusa con foco en robótica y experimentación. Nuestro grupo lidera la aplicación de plataformas robóticas para la monitorización de cultivos.</p>
+        </div>
+        
+        <div>
+            <h3>Proyecto DEMETER</h3>
+            <p>Digitalización de la cadena alimentaria a través de la interoperabilidad de plataformas y la aplicación de tecnologías IoT y datos satelitales.</p>
+        </div>
+
+        <div>
+            <h3>Proyecto AgroInteligente</h3>
+            <p>Uso de drones y Teledetección para la caracterización fenotípica de cultivos y la gestión inteligente del riego en entornos de agricultura de precisión.</p>
+        </div>
+        
+    </section>
     <hr>
 
     <section id="papers">
         <h2>📄 Publicaciones (Papers)</h2>
         <ul>
             <li>[Año]. Autor(es). "Título del Artículo". *Revista/Conferencia*. [Enlace]</li>
-            </ul>
+        </ul>
     </section>
     <hr>
-
-    <section id="resultados">
-        <h2>🗺️ Resultados y Datos Geoespaciales</h2>
-        <p>Explora los resultados de nuestros modelos y análisis ráster directamente en el mapa interactivo. Utiliza el control de capas (superior derecho) para alternar entre las diferentes capas de datos.</p>
-        <div id="map"></div>
-    </section>
-    <hr>
-
+    
     <section id="contacto">
         <h2>📧 Contacto</h2>
-        <p>Para contactar con nuestro grupo de investigación, por favor, envíe un correo electrónico al director:</p>
-        <p><strong>Email:</strong> <a href="mailto:fjmesas@uco.es">tunombre@dominio.com</a></p>
-        <p>Responderemos a su consulta lo antes posible.</p>
+        <p>Para contactar con nuestro grupo de investigación, por favor, envíe un correo electrónico a:</p>
+        <p><strong>Email:</strong> <a href="mailto:fjmesas@uco.es">[tunombre@dominio.com]</a></p>
     </section>
     <hr>
 
@@ -78,75 +168,7 @@
         <p>&copy; 2025 Grupo de Investigación. Todos los derechos reservados.</p>
     </footer>
 
-    <script>
-    // 1. Inicialización del Mapa
-    var map = L.map('map').setView([40.0, -4.0], 6); // Coordenadas y zoom inicial
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 
-    // Capa base de OpenStreetMap
-    var osm = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '© OpenStreetMap contributors'
-    }).addTo(map);
-
-    // 2. Definición de Capas GeoJSON
-    
-    // **¡IMPORTANTE!** Reemplaza esta URL con el enlace RAW de tu GeoJSON
-    var geojsonUrl = 'assets/geotiffs/ES.61.13.46.5.11_grid20_2025-10-12_2025-11-08.geojson';
-    
-    var geoJsonLayer;
-
-    // Estilo que tendrán las entidades GeoJSON (ejemplo para polígonos/líneas)
-    function style(feature) {
-        return {
-            fillColor: '#ff7800', // Color de relleno (si es polígono)
-            weight: 2,             // Grosor de la línea
-            opacity: 1,            // Opacidad de la línea
-            color: 'white',        // Color de la línea
-            dashArray: '3',        // Estilo de línea (punteada)
-            fillOpacity: 0.7       // Opacidad del relleno
-        };
-    }
-
-    // Función para manejar la carga del GeoJSON
-    fetch(geojsonUrl)
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('No se pudo cargar el GeoJSON: ' + response.statusText);
-            }
-            return response.json();
-        })
-        .then(data => {
-            // Crea la capa GeoJSON de Leaflet con los datos y el estilo
-            geoJsonLayer = L.geoJSON(data, {
-                style: style, // Aplica el estilo definido arriba
-                // Opcional: Añadir un popup al hacer clic
-                onEachFeature: function (feature, layer) {
-                    if (feature.properties) {
-                        layer.bindPopup(Object.keys(feature.properties).map(key => 
-                            `<strong>${key}:</strong> ${feature.properties[key]}`
-                        ).join('<br>'));
-                    }
-                }
-            }).addTo(map); // Añade la capa al mapa
-
-            // Centrar el mapa en la extensión del GeoJSON cargado
-            map.fitBounds(geoJsonLayer.getBounds());
-            
-            // 3. Control de Capas para activar/desactivar
-            var baseLayers = { "OpenStreetMap": osm };
-            var overlayLayers = {
-                "Capa Vectorial (GeoJSON)": geoJsonLayer
-            };
-            L.control.layers(baseLayers, overlayLayers).addTo(map);
-
-        })
-        .catch(error => {
-            console.error("Error al cargar el GeoJSON:", error);
-            // Si el GeoJSON no carga, al menos inicializa el control de capas con solo la base
-            L.control.layers({ "OpenStreetMap": osm }, {}).addTo(map);
-        });
-        
-
-</script>
 </body>
-
 </html>
