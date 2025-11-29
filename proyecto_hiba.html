@@ -6,9 +6,16 @@
     <title>Proyecto HIBA+ | [Nombre del Grupo]</title>
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
+    <!-- Esri-Leaflet para consumir capas de ArcGIS Online -->
+    <script src="https://unpkg.com/esri-leaflet/dist/esri-leaflet.js"></script>
+
+    <!-- (Opcional, lo puedes mantener si luego quieres seguir usando GeoTIFF locales)
     <script src="https://unpkg.com/geotiff/dist/geotiff.js"></script>
     <script src="https://unpkg.com/leaflet-geotiff/leaflet-geotiff.js"></script>
     <script src="https://unpkg.com/leaflet-geotiff/leaflet-geotiff-plotty.js"></script>
+    -->
+    
     <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&display=swap" rel="stylesheet">
     <style>
         /* ESTILOS INSTITUCIONALES MEJORADOS */
@@ -47,7 +54,6 @@
             text-align: left;
         }
         h1 { margin: 0; }
-        /* FIN ESTILO HEADER */
         
         h2 { color: #1E428C; border-bottom: 2px solid #F0B400; padding-bottom: 5px; }
         h3 { color: #1E428C; }
@@ -80,6 +86,42 @@
         /* Estilos de Contenido Específicos del Mapa */
         #map { height: 500px; width: 100%; margin-top: 20px; border: 1px solid #ccc; border-radius: 4px; }
         .grid-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; }
+		.legend {
+        line-height: 18px;
+        color: #555;
+        background: white;
+        padding: 10px;
+        box-shadow: 0 0 15px rgba(0,0,0,0.2);
+        border-radius: 5px;
+		}
+    .legend i {
+        width: 18px;
+        height: 18px;
+        float: left;
+        margin-right: 8px;
+        opacity: 0.7;
+		}
+    .legend strong {
+        display: block;
+        margin-bottom: 5px;
+        color: #333;
+		}
+	.video-container {
+            position: relative;
+            padding-bottom: 56.25%; /* Proporción 16:9 */
+            height: 0;
+            overflow: hidden;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+    .video-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+    }
         
     </style>
 </head>
@@ -97,19 +139,26 @@
         <a href="index.html">Inicio del Grupo</a>
         <a href="#info">Información del Proyecto</a>
         <a href="#resultados">Resultados (Mapa)</a>
-        <a href="mailto:tunombre@dominio.com">Contacto</a>
+        <a href="mailto:fjmesas@uco.es">Contacto</a>
     </nav>
 
     <section id="info">
         <h2>ℹ️ Información del Proyecto</h2>
         <p><strong>Financiación:</strong> Iniciativa de cooperación transfronteriza Interreg España-Portugal (Poctep) con una inversión pública cercana a los tres millones de euros.</p>
-        <p><strong>Ejes Tecnológicos:</strong> El proyecto se apoya en servicios de testeo y experimentación en observación de la tierra, **robótica**, IoT (Internet of Things) e Inteligencia Artificial (IA).</p>
-        <p><strong>Foco de la UCO:</strong> Nuestro grupo (ARG-124) contribuye con la innovación en **agricultura de precisión**. Estamos realizando pruebas con la plataforma robótica terrestre **Spot** de Boston Dynamics para la captura de datos LiDAR, que se combinan con imágenes satelitales y drones para informar las decisiones de manejo de cultivos.</p>
+        <p><strong>Ejes Tecnológicos:</strong> El proyecto se apoya en servicios de testeo y experimentación en observación de la tierra, <strong>robótica</strong>, IoT (Internet of Things) e Inteligencia Artificial (IA).</p>
+        <p><strong>Foco de la UCO:</strong> Nuestro grupo (ARG-124) contribuye con la innovación en <strong>agricultura de precisión</strong>. Estamos realizando pruebas con la plataforma robótica terrestre <strong>Spot</strong> de Boston Dynamics para la captura de datos LiDAR, que se combinan con imágenes satelitales y drones para informar las decisiones de manejo de cultivos.</p>
     </section>
     <hr>
 
     <section id="resultados">
         <h2>🗺️ Resultados Geoespaciales del Proyecto HIBA+</h2>
+		<h3>🎥 Monitorización con Vehículo Autónomo</h3>
+        <p>Vídeo del Vehículo Autónomo con LiDAR terrestre navegando por calles de olivar superintensivo para capturar información sobre los setos de olivar.</p>
+        
+        <div class="video-container">
+            <iframe src="https://www.youtube.com/embed/J4zVo6KpZW8" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen referrerpolicy="strict-origin-when-cross-origin></iframe>
+        </div>
+        <hr style="border: 0; border-top: 1px solid #eee; margin: 20px 0;">
         <p>Visualización de la capa de resultados para el periodo 2025-10-12 a 2025-11-08.</p>
         <div id="map"></div>
     </section>
@@ -128,59 +177,100 @@
         attribution: '© OpenStreetMap contributors'
     }).addTo(map);
 
-    // 2. Definición de Capas GeoJSON
-    // Ruta relativa que funciona en GitHub Pages
-    var geojsonUrl = 'assets/geotiffs/ES.61.13.46.5.11_grid20_2025-10-12_2025-11-08.geojson';
-    var geoJsonLayer;
+    // 2. Capa de ArcGIS Online como FeatureLayer
+    var urlAGOL = 'https://services.arcgis.com/TGYNL10qMuG5Qjsc/arcgis/rest/services/ES_61_13_46_5_1_grid10_2025_10_12_2025_11_08_(1)/FeatureServer/0';
 
-    // Estilo que tendrán las entidades GeoJSON
-    function style(feature) {
+    // Estilo continuo sencillo basado en NDVI/NDVI2
+    function estiloHIBA(feature) {
+        // Intenta primero NDVI2, si no existe usa NDVI
+        var props = feature.properties || {};
+        var v = props.NDVI2;
+        if (v === undefined) {
+            v = props.NDVI;
+        }
+
+        // Manejo básico por si viene null/undefined
+        if (v === null || v === undefined) {
+            return {
+                color: '#999999',
+                weight: 1,
+                fillOpacity: 0.3
+            };
+        }
+
+        var color =
+            v >= 0.8 ? '#006837' :
+            v >= 0.6 ? '#31a354' :
+            v >= 0.4 ? '#78c679' :
+            v >= 0.2 ? '#c2e699' :
+                       '#ffffcc';
+
         return {
-            fillColor: '#007FFF', // Azul de proyecto HIBA+
-            weight: 2,
-            opacity: 1,
-            color: '#111',
+            color: color,
+            weight: 1,
             fillOpacity: 0.7
         };
     }
 
-    // Función para manejar la carga del GeoJSON
-    fetch(geojsonUrl)
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Error de carga. Verifica que el archivo esté en: assets/geotiffs/' + response.statusText);
+    // Crear la capa desde ArcGIS Online
+    // Crear la capa desde ArcGIS Online (SOLO UNA VEZ)
+    var capaHIBA = L.esri.featureLayer({
+        url: urlAGOL,
+        style: estiloHIBA,
+        onEachFeature: function (feature, layer) {
+            if (feature.properties) {
+                var html = Object.keys(feature.properties).map(function(key) {
+                    return '<strong>' + key + ':</strong> ' + feature.properties[key];
+                }).join('<br>');
+                layer.bindPopup(html);
             }
-            return response.json();
-        })
-        .then(data => {
-            geoJsonLayer = L.geoJSON(data, {
-                style: style,
-                // Añadir popup con propiedades
-                onEachFeature: function (feature, layer) {
-                    if (feature.properties) {
-                        layer.bindPopup(Object.keys(feature.properties).map(key => 
-                            `<strong>${key}:</strong> ${feature.properties[key]}`
-                        ).join('<br>'));
-                    }
-                }
-            }).addTo(map);
+        }
+    }).addTo(map);
 
-            // Centrar el mapa en la extensión del GeoJSON cargado
-            map.fitBounds(geoJsonLayer.getBounds());
-            
-            // 3. Control de Capas para activar/desactivar
-            var baseLayers = { "OpenStreetMap": osm };
-            var overlayLayers = {
-                "Resultados HIBA+": geoJsonLayer
-            };
-            L.control.layers(baseLayers, overlayLayers).addTo(map);
+    // SOLUCIÓN: Usar query().bounds() para obtener la extensión total del servicio
+    capaHIBA.query().bounds(function (error, latlngbounds) {
+        if (error) {
+            console.error('Error al obtener los límites de la capa:', error);
+            return;
+        }
+        // Hacemos zoom a los límites recibidos
+        map.fitBounds(latlngbounds);
+    });
 
-        })
-        .catch(error => {
-            console.error("Error al cargar el GeoJSON:", error);
-            L.control.layers({ "OpenStreetMap": osm }, {}).addTo(map);
-        });
-        
+    // 3. Control de Capas
+    var baseLayers = { "OpenStreetMap": osm };
+    var overlayLayers = {
+        "Resultados HIBA+ (AGOL)": capaHIBA
+    };
+    L.control.layers(baseLayers, overlayLayers).addTo(map);
+
+    // 3. Control de Capas
+    var baseLayers = { "OpenStreetMap": osm };
+    var overlayLayers = {
+        "Resultados HIBA+ (AGOL)": capaHIBA
+    };
+    L.control.layers(baseLayers, overlayLayers).addTo(map);
+    var legend = L.control({position: 'bottomright'}); // Ubicación abajo a la derecha
+
+    legend.onAdd = function (map) {
+        var div = L.DomUtil.create('div', 'info legend'),
+            grades = [0, 0.2, 0.4, 0.6, 0.8],
+            // Estos colores deben coincidir con tu función estiloHIBA
+            colors = ['#ffffcc', '#c2e699', '#78c679', '#31a354', '#006837'];
+
+        div.innerHTML = '<strong>Índice NDVI</strong>';
+
+        // Recorrer los rangos para generar una etiqueta con cuadradito de color por cada uno
+        for (var i = 0; i < grades.length; i++) {
+            div.innerHTML +=
+                '<br><i style="background:' + colors[i] + '"></i> ' +
+                grades[i] + (grades[i + 1] ? ' &ndash; ' + grades[i + 1] : '+');
+        }
+
+        return div;
+    };
+
+    legend.addTo(map);
     </script>
 </body>
 </html>
