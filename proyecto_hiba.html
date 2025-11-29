@@ -122,7 +122,40 @@
             width: 100%;
             height: 100%;
     }
-        
+    /* Estilos para el diseño a dos columnas (Lado a Lado) */
+    .contenedor-resultados {
+        display: flex;
+        flex-wrap: wrap; /* Permite que caigan en fila en móviles */
+        gap: 20px; /* Espacio entre video y mapa */
+        align-items: flex-start;
+    }
+    
+    .columna-video {
+        flex: 1; /* Ocupa 1 parte del espacio */
+        min-width: 300px; /* Ancho mínimo para no aplastarse */
+    }
+    
+    .columna-mapa {
+        flex: 2; /* El mapa será el doble de ancho que el vídeo */
+        min-width: 300px;
+    }
+
+    /* Ajuste para que el mapa se adapte bien a la columna */
+    #map {
+        margin-top: 0; /* Quitamos el margen superior antiguo */
+        width: 100%;
+        height: 500px;
+    }
+
+    /* Ajuste para pantallas pequeñas (Móviles) */
+    @media (max-width: 768px) {
+        .contenedor-resultados {
+            flex-direction: column;
+        }
+        #map {
+            height: 400px; /* Un poco más bajo en móviles */
+        }
+    }
     </style>
 </head>
 <body>
@@ -152,15 +185,24 @@
 
     <section id="resultados">
         <h2>🗺️ Resultados Geoespaciales del Proyecto HIBA+</h2>
-		<h3>🎥 Monitorización con Vehículo Autónomo</h3>
-        <p>Vídeo del Vehículo Autónomo con LiDAR terrestre navegando por calles de olivar superintensivo para capturar información sobre los setos de olivar.</p>
-        
-        <div class="video-container">
-            <iframe src="https://www.youtube.com/embed/J4zVo6KpZW8" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen referrerpolicy="strict-origin-when-cross-origin></iframe>
-        </div>
-        <hr style="border: 0; border-top: 1px solid #eee; margin: 20px 0;">
         <p>Visualización de la capa de resultados para el periodo 2025-10-12 a 2025-11-08.</p>
-        <div id="map"></div>
+        
+        <div class="contenedor-resultados">
+            
+            <div class="columna-video">
+                <h3>🎥 Monitorización</h3>
+                <p style="font-size: 0.9em;">Captura de datos LiDAR con vehículo autónomo en olivar superintensivo.</p>
+                
+                <div class="video-container">
+                    <iframe src="https://www.youtube.com/embed/J4zVo6KpZW8" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe>
+                </div>
+            </div>
+
+            <div class="columna-mapa">
+                <div id="map"></div>
+            </div>
+            
+        </div>
     </section>
     <hr>
     
@@ -274,3 +316,5 @@
     </script>
 </body>
 </html>
+
+
